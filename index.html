@@ -9,11 +9,12 @@
 <body>
     <div class="container">
         <div class="search-container">
-            <input type="text" id="username" placeholder="Enter a GitHub username...">
+            <input type="text" id="username" placeholder="Enter a GitHub username..." autocomplete="off">
             <button id="search-btn">Search</button>
         </div>
         <div id="profile-container" class="profile-container">
             </div>
+        <div id="loading" class="loading-spinner" style="display: none;"></div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
     <script src="script.js"></script>

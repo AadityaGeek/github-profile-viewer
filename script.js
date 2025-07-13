@@ -1,46 +1,82 @@
-document.getElementById('search-btn').addEventListener('click', () => {
-    const username = document.getElementById('username').value.trim();
+// DOM Elements
+const searchBtn = document.getElementById('search-btn');
+const usernameInput = document.getElementById('username');
+const profileContainer = document.getElementById('profile-container');
+const loadingSpinner = document.getElementById('loading');
+
+// Event Listeners
+searchBtn.addEventListener('click', () => {
+    const username = usernameInput.value.trim();
     if (username) {
         fetchUserProfile(username);
     }
 });
 
-// Allow pressing Enter to search
-document.getElementById('username').addEventListener('keyup', (event) => {
+usernameInput.addEventListener('keyup', (event) => {
     if (event.key === 'Enter') {
-        document.getElementById('search-btn').click();
+        searchBtn.click();
     }
 });
 
-
+// Main Fetch Function
 async function fetchUserProfile(username) {
-    const profileContainer = document.getElementById('profile-container');
-    profileContainer.innerHTML = '<p>Loading...</p>';
-    profileContainer.style.display = 'block';
+    // Show loading spinner and hide previous results
+    loadingSpinner.style.display = 'block';
+    profileContainer.style.display = 'none';
+    profileContainer.innerHTML = '';
 
     try {
-        const userResponse = await fetch(`https://api.github.com/users/${username}`);
+        // Fetch user data and repository data in parallel
+        const [userResponse, reposResponse] = await Promise.all([
+            fetch(`https://api.github.com/users/${username}`),
+            fetch(`https://api.github.com/users/${username}/repos?per_page=100`)
+        ]);
+
         if (!userResponse.ok) {
             throw new Error('User not found');
         }
-        const userData = await userResponse.json();
 
-        const reposResponse = await fetch(userData.repos_url);
+        const userData = await userResponse.json();
         const reposData = await reposResponse.json();
 
+        // Process data
         const totalStars = reposData.reduce((sum, repo) => sum + repo.stargazers_count, 0);
-
-        displayProfile(userData, totalStars, reposData.length);
+        const topRepos = reposData.sort((a, b) => b.stargazers_count - a.stargazers_count).slice(0, 6);
+        const languageData = await fetchLanguageData(reposData);
+        
+        // Display Profile
+        displayProfile(userData, totalStars, topRepos, languageData);
 
     } catch (error) {
         profileContainer.innerHTML = `<p style="color: red; text-align: center;">${error.message}</p>`;
+    } finally {
+        // Hide loading spinner and show profile container
+        loadingSpinner.style.display = 'none';
+        profileContainer.style.display = 'block';
     }
 }
 
-function displayProfile(user, totalStars, totalRepos) {
-    const profileContainer = document.getElementById('profile-container');
+// Fetch Language Data for all repos
+async function fetchLanguageData(repos) {
+    const languagePromises = repos.map(repo => 
+        fetch(repo.languages_url).then(res => res.json())
+    );
+    const allLanguages = await Promise.all(languagePromises);
 
-    const profileHTML = `
+    const languageStats = allLanguages.reduce((stats, languages) => {
+        for (const lang in languages) {
+            stats[lang] = (stats[lang] || 0) + languages[lang];
+        }
+        return stats;
+    }, {});
+    
+    return languageStats;
+}
+
+// Display Function
+function displayProfile(user, totalStars, topRepos, languageData) {
+    // Basic Profile Info
+    let profileHTML = `
         <div class="profile-header">
             <img src="${user.avatar_url}" alt="${user.login}" class="profile-avatar">
             <div class="profile-info">
@@ -49,37 +85,78 @@ function displayProfile(user, totalStars, totalRepos) {
                 <a href="${user.html_url}" target="_blank" class="profile-link">View on GitHub</a>
             </div>
         </div>
-
         ${user.bio ? `<p class="profile-bio">${user.bio}</p>` : ''}
-
-        <div class="profile-details">
-            ${user.company ? `<div><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M1.5 2.25A2.25 2.25 0 013.75 0h8.5A2.25 2.25 0 0114.5 2.25v11.5A2.25 2.25 0 0112.25 16h-8.5A2.25 2.25 0 011.5 13.75V2.25zM3.75 1A1.25 1.25 0 002.5 2.25v11.5c0 .69.56 1.25 1.25 1.25h8.5c.69 0 1.25-.56 1.25-1.25V2.25A1.25 1.25 0 0012.25 1h-8.5zM8 10.25a.75.75 0 01.75.75v1.25a.75.75 0 01-1.5 0V11a.75.75 0 01.75-.75zm-3.5-2a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5a.75.75 0 01.75-.75zm7 0a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5a.75.75 0 01.75-.75z"></path></svg> <span>${user.company}</span></div>` : ''}
-            ${user.location ? `<div><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M8 16s6-5.686 6-10A6 6 0 008 0 6 6 0 002 6c0 4.314 6 10 6 10zm0-7a3 3 0 100-6 3 3 0 000 6z"></path></svg> <span>${user.location}</span></div>` : ''}
-            <div><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M8 1.5c-3.59 0-6.5 2.91-6.5 6.5s2.91 6.5 6.5 6.5 6.5-2.91 6.5-6.5-2.91-6.5-6.5-6.5zM8 13c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm.25-7.75h-1.5v4.5a.75.75 0 001.5 0v-4.5z"></path></svg> <span>Joined ${dayjs(user.created_at).format('MMMM D, YYYY')}</span></div>
-        </div>
-
         <div class="profile-stats">
-            <div class="stat">
-                <h3>${totalRepos}</h3>
-                <p>Repositories</p>
-            </div>
-            <div class="stat">
-                <h3>${totalStars}</h3>
-                <p>Total Stars</p>
-            </div>
-             <div class="stat">
-                <h3>${user.public_gists}</h3>
-                <p>Public Gists</p>
-            </div>
-            <div class="stat">
-                <h3>${user.followers}</h3>
-                <p>Followers</p>
-            </div>
-            <div class="stat">
-                <h3>${user.following}</h3>
-                <p>Following</p>
-            </div>
+            <div class="stat"><h3>${user.public_repos}</h3><p>Repositories</p></div>
+            <div class="stat"><h3>${totalStars}</h3><p>Total Stars</p></div>
+            <div class="stat"><h3>${user.followers}</h3><p>Followers</p></div>
+            <div class="stat"><h3>${user.following}</h3><p>Following</p></div>
         </div>
     `;
+
+    // Top Languages Section
+    const totalBytes = Object.values(languageData).reduce((sum, bytes) => sum + bytes, 0);
+    if (totalBytes > 0) {
+        const topLangs = Object.entries(languageData)
+            .sort(([, a], [, b]) => b - a)
+            .slice(0, 5);
+
+        profileHTML += '<h2 class="section-title">Top Languages</h2><div class="languages-container">';
+        topLangs.forEach(([lang, bytes]) => {
+            const percentage = ((bytes / totalBytes) * 100).toFixed(2);
+            profileHTML += `
+                <div class="language">
+                    <div class="language-name">
+                        <span>${lang}</span>
+                        <span>${percentage}%</span>
+                    </div>
+                    <div class="language-bar-bg">
+                        <div class="language-bar" style="width: ${percentage}%; background-color: ${getLanguageColor(lang)};"></div>
+                    </div>
+                </div>
+            `;
+        });
+        profileHTML += '</div>';
+    }
+
+    // Top Repositories Section
+    if (topRepos.length > 0) {
+        profileHTML += '<h2 class="section-title">Top Repositories</h2><div class="repos-grid">';
+        topRepos.forEach(repo => {
+            profileHTML += `
+                <div class="repo-card">
+                    <div>
+                        <h3><a href="${repo.html_url}" target="_blank">${repo.name}</a></h3>
+                        <p>${repo.description || 'No description provided.'}</p>
+                    </div>
+                    <div class="repo-footer">
+                        ${repo.language ? `<span><span class="repo-lang-color" style="background-color: ${getLanguageColor(repo.language)};"></span> ${repo.language}</span>` : ''}
+                        <span>⭐ ${repo.stargazers_count}</span>
+                        <span>🍴 ${repo.forks_count}</span>
+                    </div>
+                </div>
+            `;
+        });
+        profileHTML += '</div>';
+    }
+
+    // Contribution Graph Section
+    profileHTML += `
+        <h2 class="section-title">Contribution Graph</h2>
+        <img src="https://ghchart.rshah.org/${user.login}" alt="Contribution Graph" class="contribution-graph"/>
+    `;
+
     profileContainer.innerHTML = profileHTML;
+}
+
+// Simple utility to get a color for a language (not exhaustive)
+function getLanguageColor(language) {
+    const colors = {
+        JavaScript: '#f1e05a', HTML: '#e34c26', CSS: '#563d7c',
+        Python: '#3572A5', Java: '#b07219', TypeScript: '#2b7489',
+        Shell: '#89e051', C: '#555555', 'C++': '#f34b7d',
+        PHP: '#4F5D95', Ruby: '#701516', Go: '#00ADD8',
+        Swift: '#ffac45', Kotlin: '#F18E33', Rust: '#dea584'
+    };
+    return colors[language] || '#cccccc'; // Default color
 }
