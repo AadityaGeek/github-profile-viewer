@@ -826,6 +826,92 @@ body {
     margin-top: auto;
 }
 
+.metric-card-link {
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.metric-card-link:hover .metric-title {
+    color: var(--accent-cyan);
+}
+
+/* ==========================================================================
+   Developer Hub Grid & Cards
+   ========================================================================== */
+
+.dev-hub-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+}
+
+.dev-hub-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 1.25rem 1.35rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-decoration: none;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: all var(--transition-fast);
+}
+
+.dev-hub-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--border-hover);
+    background: var(--bg-card-hover);
+    box-shadow: var(--shadow-sm);
+}
+
+.dev-hub-icon-box {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.dev-hub-icon-box.cyan { background: rgba(56, 189, 248, 0.15); color: var(--accent-cyan); }
+.dev-hub-icon-box.amber { background: rgba(245, 158, 11, 0.15); color: var(--accent-amber); }
+.dev-hub-icon-box.rose { background: rgba(244, 63, 94, 0.15); color: var(--accent-rose); }
+.dev-hub-icon-box.purple { background: rgba(168, 85, 247, 0.15); color: var(--accent-purple); }
+
+.dev-hub-content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.dev-hub-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.dev-hub-desc {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+
+.dev-hub-arrow {
+    color: var(--text-muted);
+    flex-shrink: 0;
+    transition: transform var(--transition-fast), color var(--transition-fast);
+}
+
+.dev-hub-card:hover .dev-hub-arrow {
+    color: var(--accent-cyan);
+    transform: translateX(2px) translateY(-2px);
+}
+
 /* ==========================================================================
    Analytics Sub-Metrics Grid
    ========================================================================== */
@@ -1492,18 +1578,20 @@ body {
 }
 
 /* ==========================================================================
-   Contribution Graph Section (Native Dark Theme Heatmap)
+   Contribution Graph Section (Real GitHub Dark Theme Heatmap)
    ========================================================================== */
 
 .contribution-wrapper {
-    background: rgba(0, 0, 0, 0.25);
-    border: 1px solid var(--border-subtle);
+    background: rgba(13, 17, 23, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: var(--radius-md);
     padding: 1.5rem 1.25rem 1.25rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 1rem;
+    position: relative;
+    user-select: none;
 }
 
 .chart-scroll-area {
@@ -1512,22 +1600,22 @@ body {
     display: flex;
     justify-content: center;
     padding-bottom: 0.5rem;
+    user-select: none;
 }
 
 .native-heatmap-svg {
     display: block;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
 }
 
-.heatmap-cell {
-    transition: transform 0.15s ease, filter 0.15s ease;
+.gh-heatmap-cell {
+    outline: 1px solid rgba(255, 255, 255, 0.04);
+    outline-offset: -1px;
     cursor: pointer;
+    transition: filter 0.15s ease;
 }
 
-.heatmap-cell:hover {
-    filter: brightness(1.4) drop-shadow(0 0 3px #38bdf8);
-    transform: scale(1.15);
-    transform-origin: center;
+.gh-heatmap-cell:hover {
+    filter: brightness(1.3) drop-shadow(0 0 3px rgba(57, 211, 83, 0.7));
 }
 
 .clean-ghchart-img {
@@ -1537,28 +1625,37 @@ body {
     display: block;
     background: #0f172a;
     padding: 0.5rem;
+    cursor: default;
+    user-select: none;
+    -webkit-user-drag: none;
 }
 
 .chart-legend {
+    width: 100%;
+    max-width: 880px;
     display: flex;
     align-items: center;
-    gap: 0.4rem;
+    justify-content: flex-end;
+    gap: 0.35rem;
     font-size: 0.75rem;
-    font-family: var(--font-mono);
-    color: var(--text-muted);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: #7d8590;
     margin-top: 0.25rem;
+    padding-right: 0.5rem;
 }
 
 .legend-cell {
-    width: 11px;
-    height: 11px;
+    width: 10px;
+    height: 10px;
     border-radius: 2px;
     display: inline-block;
+    outline: 1px solid rgba(255, 255, 255, 0.04);
+    outline-offset: -1px;
 }
 
 .graph-loading-placeholder {
     width: 100%;
-    height: 120px;
+    height: 130px;
     border-radius: var(--radius-sm);
 }
 
@@ -1626,10 +1723,31 @@ body {
 
 .app-footer {
     border-top: 1px solid var(--border-subtle);
-    padding: 2rem 1.5rem;
+    padding: 2.25rem 1.5rem;
     text-align: center;
-    font-size: 0.85rem;
+    font-size: 0.88rem;
     color: var(--text-muted);
+}
+
+.app-footer a {
+    color: var(--accent-cyan);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color var(--transition-fast);
+}
+
+.app-footer a:hover {
+    color: #7dd3fc;
+    text-decoration: underline;
+}
+
+.app-footer-dev {
+    font-weight: 600;
+    color: var(--text-primary) !important;
+}
+
+.app-footer-dev:hover {
+    color: var(--accent-cyan) !important;
 }
 
 /* ==========================================================================

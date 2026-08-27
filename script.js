@@ -1,57 +1,7 @@
 /**
  * GitScope - GitHub Profile Viewer & Developer Analytics
- * Interactive Dashboard & API Logic
+ * Single API Call Architecture & Interactive Dashboard
  */
-
-// ==========================================
-// Language Color Dictionary (Comprehensive)
-// ==========================================
-const LANGUAGE_COLORS = {
-    JavaScript: '#f1e05a',
-    TypeScript: '#3178c6',
-    Python: '#3572A5',
-    HTML: '#e34c26',
-    CSS: '#563d7c',
-    SCSS: '#c6538c',
-    Vue: '#41b883',
-    React: '#61dafb',
-    Java: '#b07219',
-    Kotlin: '#A97BFF',
-    Rust: '#dea584',
-    Go: '#00ADD8',
-    C: '#555555',
-    'C++': '#f34b7d',
-    'C#': '#178600',
-    PHP: '#4F5D95',
-    Ruby: '#701516',
-    Swift: '#F05138',
-    Dart: '#00B4AB',
-    Shell: '#89e051',
-    Dockerfile: '#384d54',
-    Svelte: '#ff3e00',
-    Elixir: '#6e4a7e',
-    Clojure: '#db5855',
-    Scala: '#c22d40',
-    R: '#198CE7',
-    Lua: '#000080',
-    Haskell: '#5e5086',
-    Perl: '#0298c3',
-    Jupyter: '#DA5B0B',
-    'Jupyter Notebook': '#DA5B0B',
-    Zig: '#ec915c',
-    Nim: '#ffc200',
-    Assembly: '#6E4C13',
-    Solidity: '#AA6746',
-    Markdown: '#083fa1',
-    Vim: '#199f4b',
-    PowerShell: '#012456',
-    ObjectiveC: '#438eff',
-    'Objective-C': '#438eff'
-};
-
-function getLangColor(lang) {
-    return LANGUAGE_COLORS[lang] || '#94a3b8';
-}
 
 // ==========================================
 // SVG Icon Generator Helpers
@@ -73,30 +23,18 @@ const ICONS = {
     copy: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`,
     activity: `<svg class="section-heading-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>`,
     check: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`,
-    orgs: `<svg class="section-heading-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>`,
     award: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>`,
     zap: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>`,
-    terminal: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>`,
     book: `<svg class="section-heading-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>`,
-    database: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>`,
-    gist: `<svg class="section-heading-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>`
+    gist: `<svg class="section-heading-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>`,
+    heart: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>`
 };
 
 // ==========================================
-// Application State
+// Application State & DOM Elements
 // ==========================================
 let currentProfileUser = null;
-let currentRepositories = [];
-let currentEvents = [];
-let currentOrgs = [];
-let currentGists = [];
-let currentFollowersSample = [];
-let currentStarredCount = 0;
-let currentLanguageStats = {};
-let repoDisplayLimit = 6;
-let selectedLanguageFilter = 'ALL';
 
-// DOM Elements
 const searchForm = document.getElementById('search-form');
 const usernameInput = document.getElementById('username');
 const skeletonLoader = document.getElementById('skeleton-loader');
@@ -179,14 +117,10 @@ function resetToHome() {
 }
 
 // ==========================================
-// Main API Fetch Logic
+// Main Single API Fetch Logic
 // ==========================================
 async function fetchUserProfile(username, updateUrl = true) {
     if (!username) return;
-
-    // Reset pagination and filter state
-    repoDisplayLimit = 6;
-    selectedLanguageFilter = 'ALL';
 
     // Show skeleton, hide content & errors
     initialState.style.display = 'none';
@@ -200,73 +134,32 @@ async function fetchUserProfile(username, updateUrl = true) {
     }
 
     try {
-        // Parallel fetch for user info, repos, recent events, orgs, gists, and followers
-        const [userRes, reposRes, eventsRes, orgsRes, gistsRes, followersRes] = await Promise.all([
-            fetch(`https://api.github.com/users/${encodeURIComponent(username)}`),
-            fetch(`https://api.github.com/users/${encodeURIComponent(username)}/repos?per_page=100&sort=updated`),
-            fetch(`https://api.github.com/users/${encodeURIComponent(username)}/events/public?per_page=12`),
-            fetch(`https://api.github.com/users/${encodeURIComponent(username)}/orgs?per_page=12`),
-            fetch(`https://api.github.com/users/${encodeURIComponent(username)}/gists?per_page=6`),
-            fetch(`https://api.github.com/users/${encodeURIComponent(username)}/followers?per_page=8`)
-        ]);
+        // SINGLE unified GitHub API call to fetch all developer profile data
+        const response = await fetch(`https://api.github.com/users/${encodeURIComponent(username)}`);
 
-        if (userRes.status === 404) {
-            throw new Error(`Developer "@${username}" was not found on GitHub.`);
+        if (response.status === 404) {
+            throw new Error(`Developer "@${username}" was not found on GitHub. Please check the spelling.`);
         }
 
-        if (userRes.status === 403) {
-            throw new Error(`GitHub API rate limit reached (60 requests/hr for unauthenticated users). Please wait a few minutes before trying again.`);
+        if (response.status === 403) {
+            throw new Error(`GitHub API rate limit exceeded (60 requests/hr for unauthenticated calls). Please try again shortly.`);
         }
 
-        if (!userRes.ok) {
-            throw new Error(`Failed to load profile (Status ${userRes.status}).`);
+        if (!response.ok) {
+            throw new Error(`Failed to load profile (Status ${response.status}).`);
         }
 
-        const userData = await userRes.json();
-        const reposData = reposRes.ok ? await reposRes.json() : [];
-        const eventsData = eventsRes.ok ? await eventsRes.json() : [];
-        const orgsData = orgsRes.ok ? await orgsRes.json() : [];
-        const gistsData = gistsRes.ok ? await gistsRes.json() : [];
-        const followersData = followersRes.ok ? await followersRes.json() : [];
-
+        const userData = await response.json();
         currentProfileUser = userData;
-        currentRepositories = Array.isArray(reposData) ? reposData : [];
-        currentEvents = Array.isArray(eventsData) ? eventsData : [];
-        currentOrgs = Array.isArray(orgsData) ? orgsData : [];
-        currentGists = Array.isArray(gistsData) ? gistsData : [];
-        currentFollowersSample = Array.isArray(followersData) ? followersData : [];
 
-        // Aggregate language distribution
-        currentLanguageStats = aggregateLanguages(currentRepositories);
-
-        // Render Dashboard
-        renderDashboard(currentProfileUser, currentRepositories, currentEvents, currentOrgs, currentGists, currentFollowersSample, currentLanguageStats);
+        // Render complete dashboard using data from the single API call
+        renderDashboard(userData);
 
     } catch (err) {
         displayError(err.message);
     } finally {
         skeletonLoader.style.display = 'none';
     }
-}
-
-// Language Aggregation from Repositories
-function aggregateLanguages(repos) {
-    const counts = {};
-    let total = 0;
-
-    repos.forEach(repo => {
-        if (repo.language) {
-            counts[repo.language] = (counts[repo.language] || 0) + (repo.size || 1);
-            total += (repo.size || 1);
-        }
-    });
-
-    const percentages = {};
-    for (const lang in counts) {
-        percentages[lang] = ((counts[lang] / total) * 100).toFixed(1);
-    }
-
-    return { counts, percentages, total };
 }
 
 // Display Error Helper
@@ -283,7 +176,7 @@ function showToast(message, type = 'success') {
     toast.className = `toast toast-${type}`;
     toast.innerHTML = `
         ${type === 'success' ? ICONS.check : ''}
-        <span>${message}</span>
+        <span>${escapeHTML(message)}</span>
     `;
     toastContainer.appendChild(toast);
 
@@ -294,45 +187,14 @@ function showToast(message, type = 'success') {
 }
 
 // ==========================================
-// Dashboard Renderer
+// Dashboard Renderer (Powered by Single API Call)
 // ==========================================
-function renderDashboard(user, repos, events, orgs, gists, followersSample, langStats) {
-    // Total stars and forks calculations
-    const totalStars = repos.reduce((sum, r) => sum + (r.stargazers_count || 0), 0);
-    const totalForks = repos.reduce((sum, r) => sum + (r.forks_count || 0), 0);
-    const totalOpenIssues = repos.reduce((sum, r) => sum + (r.open_issues_count || 0), 0);
-    const totalSizeKB = repos.reduce((sum, r) => sum + (r.size || 0), 0);
-    const totalSizeMB = (totalSizeKB / 1024).toFixed(1);
-
-    // Forked vs Source repos
-    const forkedCount = repos.filter(r => r.fork).length;
-    const sourceCount = repos.length - forkedCount;
-
-    // License distribution
-    const licenses = {};
-    repos.forEach(r => {
-        if (r.license && r.license.spdx_id && r.license.spdx_id !== 'NOASSERTION') {
-            licenses[r.license.spdx_id] = (licenses[r.license.spdx_id] || 0) + 1;
-        }
-    });
-    const topLicense = Object.entries(licenses).sort(([, a], [, b]) => b - a)[0];
-
-    // Most starred repo
-    const sortedByStars = [...repos].sort((a, b) => (b.stargazers_count || 0) - (a.stargazers_count || 0));
-    const topStarredRepo = sortedByStars.length > 0 && sortedByStars[0].stargazers_count > 0 ? sortedByStars[0] : null;
-
-    // Account Seniority
+function renderDashboard(user) {
+    // Seniority & Dates calculation
     const createdYear = dayjs(user.created_at).year();
     const currentYear = dayjs().year();
     const accountAgeYears = Math.max(1, currentYear - createdYear);
     const joinDateFormatted = dayjs(user.created_at).format('MMMM D, YYYY');
-
-    // Top primary language
-    const topLangEntry = Object.entries(langStats.percentages).sort(([, a], [, b]) => parseFloat(b) - parseFloat(a))[0];
-    const dominantLanguage = topLangEntry ? `${topLangEntry[0]} (${topLangEntry[1]}%)` : 'Not specified';
-
-    // Average stars per repository
-    const avgStarsPerRepo = repos.length > 0 ? (totalStars / repos.length).toFixed(1) : 0;
 
     // Website URL cleaner
     let cleanBlog = user.blog || '';
@@ -340,7 +202,11 @@ function renderDashboard(user, repos, events, orgs, gists, followersSample, lang
         cleanBlog = 'https://' + cleanBlog;
     }
 
-    let html = `
+    // Velocity / Activity Metric
+    const reposPerYear = (user.public_repos / accountAgeYears).toFixed(1);
+    const accountType = user.type || 'User';
+
+    const html = `
         <div class="profile-dashboard">
             <!-- Profile Hero Card -->
             <div class="profile-hero-card">
@@ -353,8 +219,8 @@ function renderDashboard(user, repos, events, orgs, gists, followersSample, lang
                     <div class="profile-details">
                         <div class="name-action-header">
                             <div>
-                                <span class="profile-name">${user.name || user.login}</span>
-                                <span class="profile-handle">@${user.login}</span>
+                                <span class="profile-name">${escapeHTML(user.name || user.login)}</span>
+                                <span class="profile-handle">@${escapeHTML(user.login)}</span>
                             </div>
                             <div class="profile-actions">
                                 <a href="${user.html_url}" target="_blank" rel="noopener noreferrer" class="btn-secondary" title="Open GitHub Profile">
@@ -395,109 +261,63 @@ function renderDashboard(user, repos, events, orgs, gists, followersSample, lang
                 <div class="highlight-item">
                     <span class="highlight-icon cyan">${ICONS.zap}</span>
                     <div class="highlight-text">
-                        <span class="highlight-label">Primary Stack</span>
-                        <span class="highlight-val">${dominantLanguage}</span>
+                        <span class="highlight-label">Account Type</span>
+                        <span class="highlight-val">${accountType} ${user.site_admin ? '&bull; Staff' : ''}</span>
                     </div>
                 </div>
-
-                ${topStarredRepo ? `
-                <div class="highlight-item">
-                    <span class="highlight-icon amber">${ICONS.star}</span>
-                    <div class="highlight-text">
-                        <span class="highlight-label">Top Starred Repo</span>
-                        <span class="highlight-val"><a href="${topStarredRepo.html_url}" target="_blank" rel="noopener noreferrer" style="color:var(--accent-cyan); text-decoration:none;">${escapeHTML(topStarredRepo.name)} (${topStarredRepo.stargazers_count.toLocaleString()} ⭐)</a></span>
-                    </div>
-                </div>
-                ` : ''}
 
                 <div class="highlight-item">
                     <span class="highlight-icon emerald">${ICONS.repo}</span>
                     <div class="highlight-text">
-                        <span class="highlight-label">Avg Stars / Repo</span>
-                        <span class="highlight-val">${avgStarsPerRepo} ⭐</span>
+                        <span class="highlight-label">Publishing Velocity</span>
+                        <span class="highlight-val">~${reposPerYear} repos / yr</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Key Metrics Overview Grid (6 Cards) -->
+            <!-- Key Metrics Overview Grid (4 Interactive Cards) -->
             <div class="metrics-grid">
-                <div class="metric-card">
+                <a href="https://github.com/${encodeURIComponent(user.login)}?tab=repositories" target="_blank" rel="noopener noreferrer" class="metric-card metric-card-link" title="Explore public repositories on GitHub">
                     <div class="metric-header">
                         <span class="metric-title">Repositories</span>
                         <div class="metric-icon-box cyan">${ICONS.repo}</div>
                     </div>
-                    <div class="metric-value">${user.public_repos.toLocaleString()}</div>
-                </div>
+                    <div class="metric-value">${(user.public_repos || 0).toLocaleString()}</div>
+                </a>
 
-                <div class="metric-card">
-                    <div class="metric-header">
-                        <span class="metric-title">Total Stars</span>
-                        <div class="metric-icon-box amber">${ICONS.star}</div>
-                    </div>
-                    <div class="metric-value">${totalStars.toLocaleString()}</div>
-                </div>
-
-                <div class="metric-card">
-                    <div class="metric-header">
-                        <span class="metric-title">Total Forks</span>
-                        <div class="metric-icon-box indigo">${ICONS.fork}</div>
-                    </div>
-                    <div class="metric-value">${totalForks.toLocaleString()}</div>
-                </div>
-
-                <div class="metric-card">
+                <a href="https://github.com/${encodeURIComponent(user.login)}?tab=followers" target="_blank" rel="noopener noreferrer" class="metric-card metric-card-link" title="View followers on GitHub">
                     <div class="metric-header">
                         <span class="metric-title">Followers</span>
                         <div class="metric-icon-box emerald">${ICONS.users}</div>
                     </div>
-                    <div class="metric-value">${user.followers.toLocaleString()}</div>
-                </div>
+                    <div class="metric-value">${(user.followers || 0).toLocaleString()}</div>
+                </a>
 
-                <div class="metric-card">
+                <a href="https://github.com/${encodeURIComponent(user.login)}?tab=following" target="_blank" rel="noopener noreferrer" class="metric-card metric-card-link" title="View following on GitHub">
                     <div class="metric-header">
                         <span class="metric-title">Following</span>
                         <div class="metric-icon-box purple">${ICONS.userCheck}</div>
                     </div>
-                    <div class="metric-value">${user.following.toLocaleString()}</div>
-                </div>
+                    <div class="metric-value">${(user.following || 0).toLocaleString()}</div>
+                </a>
 
-                <div class="metric-card">
+                <a href="https://gist.github.com/${encodeURIComponent(user.login)}" target="_blank" rel="noopener noreferrer" class="metric-card metric-card-link" title="Explore public code snippets & gists">
                     <div class="metric-header">
                         <span class="metric-title">Public Gists</span>
                         <div class="metric-icon-box rose">${ICONS.code}</div>
                     </div>
                     <div class="metric-value">${(user.public_gists || 0).toLocaleString()}</div>
-                </div>
+                </a>
             </div>
 
-            <!-- Deep Repository & Code Analytics Stats Grid -->
-            <div class="analytics-metrics-grid">
-                <div class="analytics-stat-box">
-                    <span class="analytics-stat-label">Source vs Forked</span>
-                    <span class="analytics-stat-value">${sourceCount} Source &bull; ${forkedCount} Forked</span>
-                </div>
-                <div class="analytics-stat-box">
-                    <span class="analytics-stat-label">Total Code Size</span>
-                    <span class="analytics-stat-value">${totalSizeMB} MB</span>
-                </div>
-                <div class="analytics-stat-box">
-                    <span class="analytics-stat-label">Total Open Issues</span>
-                    <span class="analytics-stat-value">${totalOpenIssues.toLocaleString()}</span>
-                </div>
-                <div class="analytics-stat-box">
-                    <span class="analytics-stat-label">Dominant License</span>
-                    <span class="analytics-stat-value">${topLicense ? `${topLicense[0]} (${topLicense[1]} repos)` : 'Various'}</span>
-                </div>
-            </div>
-
-            <!-- GitHub Contribution Activity (Interactive Native Heatmap) -->
+            <!-- GitHub Contribution Activity (Real GitHub Style Heatmap) -->
             <div class="section-container">
                 <div class="section-header">
                     <div class="section-heading-group">
                         <span class="section-heading-icon">${ICONS.activity}</span>
                         <h2 class="section-heading">Contribution Activity Calendar</h2>
-                        <span class="section-count-badge" id="contrib-total-badge">Last 1 Year</span>
                     </div>
+                    <span class="section-count-badge" id="contrib-total-badge">Last 1 Year</span>
                 </div>
                 <div class="contribution-wrapper" id="contribution-graph-box">
                     <div class="graph-loading-placeholder">
@@ -506,69 +326,79 @@ function renderDashboard(user, repos, events, orgs, gists, followersSample, lang
                 </div>
             </div>
 
-            <!-- Language Analytics Breakdown -->
-            ${renderLanguageSection(langStats)}
-
-            <!-- Organizations & Teams Section (if available) -->
-            ${renderOrganizationsSection(orgs)}
-
-            <!-- Repository Explorer with Filters & 6-Repo Limiter -->
-            <div class="section-container" id="repo-section-container">
+            <!-- Quick Action Hub Section -->
+            <div class="section-container">
                 <div class="section-header">
                     <div class="section-heading-group">
                         <span class="section-heading-icon">${ICONS.book}</span>
-                        <h2 class="section-heading">Repositories</h2>
-                        <span class="section-count-badge" id="repo-display-count">${Math.min(repoDisplayLimit, repos.length)} of ${repos.length}</span>
-                    </div>
-                    <div class="repo-controls">
-                        <input type="text" id="repo-filter-input" class="repo-search-input" placeholder="Search repository name or description..." autocomplete="off" />
-                        <select id="repo-sort-select" class="repo-sort-select">
-                            <option value="stars">Most Stars</option>
-                            <option value="forks">Most Forks</option>
-                            <option value="updated">Recently Updated</option>
-                            <option value="name">Alphabetical (A-Z)</option>
-                        </select>
+                        <h2 class="section-heading">Explore Developer Resources</h2>
+                        <span class="section-count-badge">Quick Hub</span>
                     </div>
                 </div>
+                <div class="dev-hub-grid">
+                    <a href="https://github.com/${encodeURIComponent(user.login)}?tab=repositories" target="_blank" rel="noopener noreferrer" class="dev-hub-card">
+                        <div class="dev-hub-icon-box cyan">${ICONS.repo}</div>
+                        <div class="dev-hub-content">
+                            <span class="dev-hub-title">Repositories (${user.public_repos.toLocaleString()})</span>
+                            <span class="dev-hub-desc">Browse all public source code repositories & projects</span>
+                        </div>
+                        <div class="dev-hub-arrow">${ICONS.external}</div>
+                    </a>
 
-                <!-- Language Filter Chips Bar -->
-                <div class="repo-lang-filter-bar" id="repo-lang-filter-bar">
-                    <!-- Populated dynamically -->
-                </div>
+                    <a href="https://github.com/${encodeURIComponent(user.login)}?tab=stars" target="_blank" rel="noopener noreferrer" class="dev-hub-card">
+                        <div class="dev-hub-icon-box amber">${ICONS.star}</div>
+                        <div class="dev-hub-content">
+                            <span class="dev-hub-title">Starred Repositories</span>
+                            <span class="dev-hub-desc">Discover curated open-source projects starred by @${escapeHTML(user.login)}</span>
+                        </div>
+                        <div class="dev-hub-arrow">${ICONS.external}</div>
+                    </a>
 
-                <div class="repos-grid" id="repos-grid-content">
-                    <!-- Populated by filter/sort helper -->
-                </div>
+                    <a href="https://gist.github.com/${encodeURIComponent(user.login)}" target="_blank" rel="noopener noreferrer" class="dev-hub-card">
+                        <div class="dev-hub-icon-box rose">${ICONS.gist}</div>
+                        <div class="dev-hub-content">
+                            <span class="dev-hub-title">Public Gists (${(user.public_gists || 0).toLocaleString()})</span>
+                            <span class="dev-hub-desc">Explore shared code snippets, notes, and utility scripts</span>
+                        </div>
+                        <div class="dev-hub-arrow">${ICONS.external}</div>
+                    </a>
 
-                <!-- Show More / Show Less Toggle Button -->
-                <div class="repo-pagination-row" id="repo-pagination-row">
-                    <!-- Populated dynamically -->
+                    <a href="https://github.com/${encodeURIComponent(user.login)}?tab=projects" target="_blank" rel="noopener noreferrer" class="dev-hub-card">
+                        <div class="dev-hub-icon-box purple">${ICONS.zap}</div>
+                        <div class="dev-hub-content">
+                            <span class="dev-hub-title">Projects & Roadmap</span>
+                            <span class="dev-hub-desc">View Kanban boards, roadmaps, and tracking dashboards</span>
+                        </div>
+                        <div class="dev-hub-arrow">${ICONS.external}</div>
+                    </a>
                 </div>
             </div>
-
-            <!-- Public Gists Showcase (if user has gists) -->
-            ${renderGistsSection(gists)}
-
-            <!-- Followers Preview Peek -->
-            ${renderFollowersSection(followersSample, user.followers)}
-
-            <!-- Recent Public Activity Feed -->
-            ${renderRecentActivitySection(events, user.login)}
         </div>
     `;
 
     profileContainer.innerHTML = html;
     profileContainer.style.display = 'block';
 
-    // Fetch and render native interactive contribution heatmap
+    // Render real GitHub-style interactive contribution heatmap
     renderNativeContributionHeatmap(user.login);
 
-    // Hook up dynamic controls inside the dashboard
-    setupDashboardControls(user, repos, sortedByStars);
+    // Hook up share button inside dashboard
+    const copyBtn = document.getElementById('copy-share-btn');
+    if (copyBtn) {
+        copyBtn.addEventListener('click', async () => {
+            const shareUrl = `${window.location.origin}${window.location.pathname}?user=${encodeURIComponent(user.login)}`;
+            try {
+                await navigator.clipboard.writeText(shareUrl);
+                showToast(`Share link for @${user.login} copied to clipboard!`);
+            } catch {
+                showToast(`Link: ${shareUrl}`);
+            }
+        });
+    }
 }
 
 // ==========================================
-// Native Interactive Contribution Heatmap
+// Real GitHub-Style Interactive Contribution Heatmap
 // ==========================================
 async function renderNativeContributionHeatmap(username) {
     const container = document.getElementById('contribution-graph-box');
@@ -576,34 +406,34 @@ async function renderNativeContributionHeatmap(username) {
     if (!container) return;
 
     try {
-        // Fetch real structured day-by-day contribution JSON (CORS enabled)
         const res = await fetch(`https://github-contributions-api.jogruber.de/v4/${encodeURIComponent(username)}?y=last`);
-        if (!res.ok) throw new Error('Contribution API not available');
+        if (!res.ok) throw new Error('Contribution API unavailable');
 
         const data = await res.json();
         const days = data.contributions || [];
-        const totalLastYear = (data.total && data.total.lastYear) !== undefined ? data.total.lastYear : days.reduce((sum, d) => sum + (d.count || 0), 0);
+        const totalLastYear = (data.total && data.total.lastYear !== undefined)
+            ? data.total.lastYear
+            : days.reduce((sum, d) => sum + (d.count || 0), 0);
 
         if (totalBadge) {
             totalBadge.textContent = `${totalLastYear.toLocaleString()} contributions in the last year`;
         }
 
         if (days.length === 0) {
-            throw new Error('No contribution data');
+            throw new Error('No contribution records');
         }
 
-        // Color mapping for dark theme levels (0 to 4)
+        // Authentic GitHub Dark Theme Color Palette
         const levelColors = [
-            '#162033', // level 0 (empty)
-            '#0e4429', // level 1
-            '#006d32', // level 2
-            '#26a641', // level 3
-            '#38bdf8'  // level 4 (vibrant cyan glow)
+            '#161b22', // Level 0 (No activity)
+            '#0e4429', // Level 1
+            '#006d32', // Level 2
+            '#26a641', // Level 3
+            '#39d353'  // Level 4 (Vivid GitHub Neon Green)
         ];
 
-        // Build SVG / Grid heatmap
-        // GitHub contributions grid has 7 rows (Sunday to Saturday) and ~53 columns
-        const cellWidth = 11;
+        // GitHub Contribution Grid Dimensions
+        const cellWidth = 10;
         const cellGap = 3;
         const totalWeeks = Math.ceil(days.length / 7);
         const svgWidth = totalWeeks * (cellWidth + cellGap) + 36;
@@ -617,18 +447,19 @@ async function renderNativeContributionHeatmap(username) {
             const weekIndex = Math.floor(index / 7);
             const dayOfWeek = index % 7;
             const x = weekIndex * (cellWidth + cellGap) + 32;
-            const y = dayOfWeek * (cellWidth + cellGap) + 16;
+            const y = dayOfWeek * (cellWidth + cellGap) + 18;
             const color = levelColors[day.level] || levelColors[0];
             const dateFormatted = dayjs(day.date).format('MMM D, YYYY');
-            const tooltip = `${day.count} contribution${day.count === 1 ? '' : 's'} on ${dateFormatted}`;
+            const countText = day.count === 0 ? 'No' : day.count.toLocaleString();
+            const tooltip = `${countText} contribution${day.count === 1 ? '' : 's'} on ${dateFormatted}`;
 
-            // Add month labels at the top
+            // Add Month Labels
             const dateObj = new Date(day.date);
             const month = dateObj.getMonth();
             if (month !== lastMonth && dayOfWeek === 0) {
                 lastMonth = month;
                 const monthName = dayjs(day.date).format('MMM');
-                monthLabelsHtml += `<text x="${x}" y="10" fill="#64748b" font-size="9" font-family="JetBrains Mono, monospace">${monthName}</text>`;
+                monthLabelsHtml += `<text x="${x}" y="12" fill="#7d8590" font-size="9" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">${monthName}</text>`;
             }
 
             cellsHtml += `
@@ -639,8 +470,7 @@ async function renderNativeContributionHeatmap(username) {
                     height="${cellWidth}" 
                     rx="2" 
                     fill="${color}" 
-                    class="heatmap-cell"
-                    data-tooltip="${tooltip}"
+                    class="gh-heatmap-cell"
                 >
                     <title>${tooltip}</title>
                 </rect>
@@ -649,9 +479,9 @@ async function renderNativeContributionHeatmap(username) {
 
         // Day of week labels (Mon, Wed, Fri)
         const dayLabelsHtml = `
-            <text x="6" y="${1 * (cellWidth + cellGap) + 25}" fill="#64748b" font-size="8" font-family="JetBrains Mono, monospace">Mon</text>
-            <text x="6" y="${3 * (cellWidth + cellGap) + 25}" fill="#64748b" font-size="8" font-family="JetBrains Mono, monospace">Wed</text>
-            <text x="6" y="${5 * (cellWidth + cellGap) + 25}" fill="#64748b" font-size="8" font-family="JetBrains Mono, monospace">Fri</text>
+            <text x="6" y="${1 * (cellWidth + cellGap) + 26}" fill="#7d8590" font-size="9" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">Mon</text>
+            <text x="6" y="${3 * (cellWidth + cellGap) + 26}" fill="#7d8590" font-size="9" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">Wed</text>
+            <text x="6" y="${5 * (cellWidth + cellGap) + 26}" fill="#7d8590" font-size="9" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">Fri</text>
         `;
 
         container.innerHTML = `
@@ -664,7 +494,7 @@ async function renderNativeContributionHeatmap(username) {
             </div>
             <div class="chart-legend">
                 <span>Less</span>
-                <span class="legend-cell" style="background-color: ${levelColors[0]};" title="0 contributions"></span>
+                <span class="legend-cell" style="background-color: ${levelColors[0]};" title="No contributions"></span>
                 <span class="legend-cell" style="background-color: ${levelColors[1]};" title="1-3 contributions"></span>
                 <span class="legend-cell" style="background-color: ${levelColors[2]};" title="4-6 contributions"></span>
                 <span class="legend-cell" style="background-color: ${levelColors[3]};" title="7-9 contributions"></span>
@@ -673,444 +503,20 @@ async function renderNativeContributionHeatmap(username) {
             </div>
         `;
 
-    } catch (e) {
-        // High-contrast clean fallback
+    } catch (err) {
+        // High-contrast clean fallback if third-party API is unreachable
         container.innerHTML = `
             <div class="chart-scroll-area">
                 <img 
-                    src="https://ghchart.rshah.org/38bdf8/${username}" 
-                    alt="${username}'s GitHub Contributions" 
+                    src="https://ghchart.rshah.org/39d353/${encodeURIComponent(username)}" 
+                    alt="${escapeHTML(username)}'s GitHub Contributions" 
                     class="clean-ghchart-img" 
                     loading="lazy" 
-                    onerror="this.parentElement.innerHTML='<p style=\\'color:var(--text-muted);padding:1.5rem;text-align:center;\\'>Contribution activity graph temporarily unavailable.</p>'"
+                    onerror="this.parentElement.innerHTML='<p style=\\'color:var(--text-muted);padding:1.5rem;text-align:center;\\'>Contribution activity graph currently unavailable.</p>'"
                 />
             </div>
         `;
     }
-}
-
-// ==========================================
-// Organizations Section Generator
-// ==========================================
-function renderOrganizationsSection(orgs) {
-    if (!orgs || orgs.length === 0) return '';
-
-    const orgCards = orgs.map(org => `
-        <a href="https://github.com/${org.login}" target="_blank" rel="noopener noreferrer" class="org-card" title="${org.description || org.login}">
-            <img src="${org.avatar_url}" alt="${org.login}" class="org-avatar" />
-            <div class="org-info">
-                <span class="org-name">${escapeHTML(org.login)}</span>
-                ${org.description ? `<span class="org-desc">${escapeHTML(org.description)}</span>` : '<span class="org-desc" style="color:var(--text-muted);">Organization Member</span>'}
-            </div>
-        </a>
-    `).join('');
-
-    return `
-        <div class="section-container">
-            <div class="section-header">
-                <div class="section-heading-group">
-                    <span class="section-heading-icon">${ICONS.orgs}</span>
-                    <h2 class="section-heading">Organizations & Teams</h2>
-                    <span class="section-count-badge">${orgs.length}</span>
-                </div>
-            </div>
-            <div class="orgs-grid">${orgCards}</div>
-        </div>
-    `;
-}
-
-// ==========================================
-// Public Gists Section Generator
-// ==========================================
-function renderGistsSection(gists) {
-    if (!gists || gists.length === 0) return '';
-
-    const gistCards = gists.map(g => {
-        const files = Object.values(g.files || {});
-        const primaryFile = files[0] || { filename: 'gistfile.txt', language: 'Text' };
-        const updatedTimeAgo = dayjs(g.updated_at).fromNow();
-
-        return `
-            <div class="gist-card">
-                <div class="gist-top">
-                    <a href="${g.html_url}" target="_blank" rel="noopener noreferrer" class="gist-name-link">
-                        ${ICONS.code}
-                        <span>${escapeHTML(primaryFile.filename)}</span>
-                    </a>
-                    <span class="gist-lang-badge" style="border-left: 3px solid ${getLangColor(primaryFile.language)};">${escapeHTML(primaryFile.language || 'Code')}</span>
-                </div>
-                <p class="gist-desc">${escapeHTML(g.description || 'No description provided.')}</p>
-                <div class="gist-footer">
-                    <span>${files.length} file${files.length > 1 ? 's' : ''}</span>
-                    <span>Updated ${updatedTimeAgo}</span>
-                </div>
-            </div>
-        `;
-    }).join('');
-
-    return `
-        <div class="section-container">
-            <div class="section-header">
-                <div class="section-heading-group">
-                    <span class="section-heading-icon">${ICONS.gist}</span>
-                    <h2 class="section-heading">Public Gists & Code Snippets</h2>
-                    <span class="section-count-badge">${gists.length}</span>
-                </div>
-            </div>
-            <div class="gists-grid">${gistCards}</div>
-        </div>
-    `;
-}
-
-// ==========================================
-// Followers Preview Section Generator
-// ==========================================
-function renderFollowersSection(followersSample, totalFollowers) {
-    if (!followersSample || followersSample.length === 0) return '';
-
-    const followerAvatars = followersSample.map(f => `
-        <a href="#" class="follower-avatar-link chip-quick-jump" data-user="${escapeHTML(f.login)}" title="Inspect @${escapeHTML(f.login)}">
-            <img src="${f.avatar_url}" alt="${escapeHTML(f.login)}" class="follower-thumb-img" />
-            <span class="follower-login-name">@${escapeHTML(f.login)}</span>
-        </a>
-    `).join('');
-
-    return `
-        <div class="section-container">
-            <div class="section-header">
-                <div class="section-heading-group">
-                    <span class="section-heading-icon">${ICONS.users}</span>
-                    <h2 class="section-heading">Followers Sample</h2>
-                    <span class="section-count-badge">${totalFollowers.toLocaleString()} total</span>
-                </div>
-            </div>
-            <div class="followers-preview-grid">${followerAvatars}</div>
-        </div>
-    `;
-}
-
-// ==========================================
-// Language Section Generator
-// ==========================================
-function renderLanguageSection(langStats) {
-    const entries = Object.entries(langStats.percentages)
-        .sort(([, a], [, b]) => parseFloat(b) - parseFloat(a))
-        .slice(0, 8);
-
-    if (entries.length === 0) return '';
-
-    const segmentedBars = entries.map(([lang, pct]) => {
-        const color = getLangColor(lang);
-        return `<div class="lang-segment" style="width: ${pct}%; background-color: ${color};" title="${lang}: ${pct}%"></div>`;
-    }).join('');
-
-    const languageCards = entries.map(([lang, pct]) => {
-        const color = getLangColor(lang);
-        return `
-            <div class="language-item">
-                <div class="language-item-left">
-                    <span class="lang-dot" style="background-color: ${color};"></span>
-                    <span class="lang-title">${escapeHTML(lang)}</span>
-                </div>
-                <span class="lang-pct">${pct}%</span>
-            </div>
-        `;
-    }).join('');
-
-    return `
-        <div class="section-container">
-            <div class="section-header">
-                <div class="section-heading-group">
-                    <span class="section-heading-icon">${ICONS.code}</span>
-                    <h2 class="section-heading">Language Distribution</h2>
-                    <span class="section-count-badge">Top ${entries.length}</span>
-                </div>
-            </div>
-            <div class="lang-segmented-bar">${segmentedBars}</div>
-            <div class="languages-grid">${languageCards}</div>
-        </div>
-    `;
-}
-
-// ==========================================
-// Recent Activity Feed Generator
-// ==========================================
-function renderRecentActivitySection(events, username) {
-    if (!events || events.length === 0) {
-        return '';
-    }
-
-    const filteredEvents = events.slice(0, 6).map(ev => {
-        let actionText = '';
-        let repoLink = `<a href="https://github.com/${ev.repo.name}" target="_blank" rel="noopener noreferrer">${ev.repo.name}</a>`;
-        const timeAgo = dayjs(ev.created_at).fromNow();
-
-        switch (ev.type) {
-            case 'PushEvent':
-                const commitCount = ev.payload.commits ? ev.payload.commits.length : 1;
-                actionText = `Pushed <strong>${commitCount} commit${commitCount > 1 ? 's' : ''}</strong> to ${repoLink}`;
-                break;
-            case 'WatchEvent':
-                actionText = `Starred repository ${repoLink}`;
-                break;
-            case 'CreateEvent':
-                actionText = `Created ${ev.payload.ref_type || 'repository'} in ${repoLink}`;
-                break;
-            case 'ForkEvent':
-                actionText = `Forked repository ${repoLink}`;
-                break;
-            case 'PullRequestEvent':
-                actionText = `${ev.payload.action || 'Opened'} a pull request in ${repoLink}`;
-                break;
-            case 'IssuesEvent':
-                actionText = `${ev.payload.action || 'Interacted with'} an issue in ${repoLink}`;
-                break;
-            case 'ReleaseEvent':
-                actionText = `Published release in ${repoLink}`;
-                break;
-            default:
-                actionText = `Contributed to ${repoLink}`;
-        }
-
-        return `
-            <div class="activity-item">
-                <div class="activity-icon-box">${ICONS.activity}</div>
-                <div class="activity-content">
-                    <div class="activity-title">${actionText}</div>
-                    <div class="activity-time">${timeAgo}</div>
-                </div>
-            </div>
-        `;
-    }).join('');
-
-    return `
-        <div class="section-container">
-            <div class="section-header">
-                <div class="section-heading-group">
-                    <span class="section-heading-icon">${ICONS.activity}</span>
-                    <h2 class="section-heading">Recent Public Activity</h2>
-                    <span class="section-count-badge">Live Feed</span>
-                </div>
-            </div>
-            <div class="activity-feed">${filteredEvents}</div>
-        </div>
-    `;
-}
-
-// ==========================================
-// Repositories Grid & Filter Controller
-// ==========================================
-function setupDashboardControls(user, repos, sortedByStars) {
-    const copyBtn = document.getElementById('copy-share-btn');
-    const repoSearch = document.getElementById('repo-filter-input');
-    const repoSort = document.getElementById('repo-sort-select');
-    const reposGrid = document.getElementById('repos-grid-content');
-    const countBadge = document.getElementById('repo-display-count');
-    const langFilterBar = document.getElementById('repo-lang-filter-bar');
-    const paginationRow = document.getElementById('repo-pagination-row');
-
-    // Follower quick-jump chips
-    document.querySelectorAll('.chip-quick-jump').forEach(el => {
-        el.addEventListener('click', (e) => {
-            e.preventDefault();
-            const targetUser = el.getAttribute('data-user');
-            if (targetUser) {
-                usernameInput.value = targetUser;
-                fetchUserProfile(targetUser);
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
-        });
-    });
-
-    // Share link copy
-    if (copyBtn) {
-        copyBtn.addEventListener('click', async () => {
-            const shareUrl = `${window.location.origin}${window.location.pathname}?user=${encodeURIComponent(user.login)}`;
-            try {
-                await navigator.clipboard.writeText(shareUrl);
-                showToast(`Share link for @${user.login} copied!`);
-            } catch {
-                showToast(`Link copied: ${shareUrl}`);
-            }
-        });
-    }
-
-    // Top 3 repo IDs by stars for "Featured" badges
-    const topStarredIds = new Set(
-        sortedByStars.filter(r => (r.stargazers_count || 0) > 0).slice(0, 3).map(r => r.id)
-    );
-
-    // Build Language Filter Pills
-    const availableLangs = Array.from(new Set(repos.map(r => r.language).filter(Boolean))).sort();
-    if (availableLangs.length > 0) {
-        langFilterBar.innerHTML = `
-            <button type="button" class="lang-filter-pill ${selectedLanguageFilter === 'ALL' ? 'active' : ''}" data-lang="ALL">All (${repos.length})</button>
-            ${availableLangs.map(l => `
-                <button type="button" class="lang-filter-pill ${selectedLanguageFilter === l ? 'active' : ''}" data-lang="${escapeHTML(l)}">
-                    <span class="lang-dot" style="background-color: ${getLangColor(l)};"></span>
-                    <span>${escapeHTML(l)}</span>
-                </button>
-            `).join('')}
-        `;
-
-        langFilterBar.addEventListener('click', (e) => {
-            const pill = e.target.closest('.lang-filter-pill');
-            if (pill) {
-                selectedLanguageFilter = pill.getAttribute('data-lang');
-                langFilterBar.querySelectorAll('.lang-filter-pill').forEach(p => p.classList.remove('active'));
-                pill.classList.add('active');
-                updateRepos();
-            }
-        });
-    }
-
-    // Function to render filtered & sorted repos
-    function updateRepos() {
-        const query = (repoSearch.value || '').toLowerCase().trim();
-        const sortBy = repoSort.value;
-
-        let filtered = repos.filter(r => {
-            const matchName = r.name.toLowerCase().includes(query);
-            const matchDesc = (r.description || '').toLowerCase().includes(query);
-            const matchLang = (r.language || '').toLowerCase().includes(query);
-            const matchesText = matchName || matchDesc || matchLang;
-
-            const matchesLangFilter = selectedLanguageFilter === 'ALL' || r.language === selectedLanguageFilter;
-            return matchesText && matchesLangFilter;
-        });
-
-        // Sorting
-        filtered.sort((a, b) => {
-            if (sortBy === 'stars') return (b.stargazers_count || 0) - (a.stargazers_count || 0);
-            if (sortBy === 'forks') return (b.forks_count || 0) - (a.forks_count || 0);
-            if (sortBy === 'updated') return new Date(b.updated_at) - new Date(a.updated_at);
-            if (sortBy === 'name') return a.name.localeCompare(b.name);
-            return 0;
-        });
-
-        const totalFiltered = filtered.length;
-        const visibleRepos = filtered.slice(0, repoDisplayLimit);
-        countBadge.textContent = `${Math.min(visibleRepos.length, totalFiltered)} of ${totalFiltered}`;
-
-        if (totalFiltered === 0) {
-            reposGrid.innerHTML = `
-                <div style="grid-column: 1 / -1; text-align: center; padding: 2.5rem; color: var(--text-muted);">
-                    <p>No repositories found matching your filter criteria.</p>
-                </div>
-            `;
-            paginationRow.innerHTML = '';
-            return;
-        }
-
-        reposGrid.innerHTML = visibleRepos.map(r => {
-            const langColor = r.language ? getLangColor(r.language) : '#cccccc';
-            const updatedAgo = dayjs(r.updated_at).fromNow();
-            const isTopStarred = topStarredIds.has(r.id);
-            const topicsHtml = (r.topics && r.topics.length > 0)
-                ? `<div class="repo-topics">${r.topics.slice(0, 4).map(t => `<span class="topic-tag">${escapeHTML(t)}</span>`).join('')}</div>`
-                : '';
-
-            return `
-                <div class="repo-card ${isTopStarred ? 'repo-card-featured' : ''}">
-                    <div class="repo-card-top">
-                        <div class="repo-card-title-row">
-                            <a href="${r.html_url}" target="_blank" rel="noopener noreferrer" class="repo-name-link">
-                                <span>${escapeHTML(r.name)}</span>
-                            </a>
-                            <div style="display:flex; gap:0.4rem; align-items:center;">
-                                ${isTopStarred ? `<span class="badge-featured">⭐ Top Starred</span>` : ''}
-                                <span class="repo-badge-vis">${r.private ? 'Private' : 'Public'}</span>
-                            </div>
-                        </div>
-                        <p class="repo-desc">${escapeHTML(r.description || 'No description provided.')}</p>
-                        ${topicsHtml}
-                    </div>
-
-                    <div class="repo-card-bottom">
-                        ${r.language ? `
-                            <div class="repo-stat-item">
-                                <span class="lang-dot" style="background-color: ${langColor};"></span>
-                                <span>${escapeHTML(r.language)}</span>
-                            </div>
-                        ` : `<span></span>`}
-
-                        <div class="repo-stats-group">
-                            <button type="button" class="btn-copy-clone" data-clone="${r.clone_url}" title="Copy clone command: git clone ${r.clone_url}">
-                                ${ICONS.terminal}
-                                <span>Clone</span>
-                            </button>
-                            <span class="repo-stat-item" title="Stars">
-                                ${ICONS.star}
-                                <span>${(r.stargazers_count || 0).toLocaleString()}</span>
-                            </span>
-                            <span class="repo-stat-item" title="Forks">
-                                ${ICONS.fork}
-                                <span>${(r.forks_count || 0).toLocaleString()}</span>
-                            </span>
-                            <span title="Updated ${updatedAgo}">${updatedAgo}</span>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }).join('');
-
-        // Clone button click listeners
-        reposGrid.querySelectorAll('.btn-copy-clone').forEach(btn => {
-            btn.addEventListener('click', async (e) => {
-                e.preventDefault();
-                const cloneUrl = btn.getAttribute('data-clone');
-                const command = `git clone ${cloneUrl}`;
-                try {
-                    await navigator.clipboard.writeText(command);
-                    showToast(`Copied: ${command}`);
-                } catch {
-                    showToast(`Clone URL: ${cloneUrl}`);
-                }
-            });
-        });
-
-        // Pagination toggle: Show More / Show Less
-        if (totalFiltered > 6) {
-            if (repoDisplayLimit >= totalFiltered) {
-                paginationRow.innerHTML = `
-                    <button type="button" id="toggle-repo-limit-btn" class="btn-show-more">
-                        <span>Show Fewer (Top 6)</span>
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"></polyline></svg>
-                    </button>
-                `;
-            } else {
-                paginationRow.innerHTML = `
-                    <button type="button" id="toggle-repo-limit-btn" class="btn-show-more">
-                        <span>Show All Repositories (${totalFiltered})</span>
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                    </button>
-                `;
-            }
-
-            const toggleBtn = document.getElementById('toggle-repo-limit-btn');
-            if (toggleBtn) {
-                toggleBtn.addEventListener('click', () => {
-                    if (repoDisplayLimit >= totalFiltered) {
-                        repoDisplayLimit = 6;
-                    } else {
-                        repoDisplayLimit = totalFiltered;
-                    }
-                    updateRepos();
-                });
-            }
-        } else {
-            paginationRow.innerHTML = '';
-        }
-    }
-
-    repoSearch.addEventListener('input', () => {
-        repoDisplayLimit = 6;
-        updateRepos();
-    });
-    repoSort.addEventListener('change', updateRepos);
-
-    // Initial render
-    updateRepos();
 }
 
 // Utility: Escape HTML
