@@ -14,6 +14,7 @@ A modern, responsive, developer-focused web dashboard to inspect GitHub profiles
 https://github.com/user-attachments/assets/18034159-ea2b-46a0-8f9d-492e2b414635
 
 
+
 ## ✨ Features
 
 - **Single Unified API Call**: Queries `https://api.github.com/users/{username}` in 1 single HTTP request, drastically conserving rate limits and providing instantaneous load times.
