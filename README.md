@@ -1,3 +1,7 @@
+
+
+https://github.com/user-attachments/assets/d51d0f7a-60b4-45ab-93b7-5ef01f158b84
+
 # GitScope - GitHub Profile Viewer & Developer Analytics
 
 A modern, responsive, developer-focused web dashboard to inspect GitHub profiles, key metrics, repositories, public code snippets (Gists), followers, and interactive contribution heatmaps in a crisp OLED dark theme powered by a **single, lightning-fast GitHub REST API call**.
