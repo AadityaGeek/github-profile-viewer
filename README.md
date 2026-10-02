@@ -9,6 +9,21 @@ A modern, responsive, developer-focused web dashboard to inspect GitHub profiles
 
 ---
 
+## 🎬 Video Showcase
+
+<div align="center">
+  <video src="demo/demo.mp4" poster="demo/poster.jpg" controls="controls" width="100%" style="max-width: 880px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 16px 40px rgba(0,0,0,0.5);">
+    <a href="demo/demo.mp4" title="Click to open video">
+      <img src="demo/preview.webp" alt="GitScope Launch Video Demo" width="100%" style="max-width: 880px; border-radius: 12px;" />
+    </a>
+  </video>
+  <p align="center">
+    <em>🎬 <strong><a href="demo/demo.mp4">Watch Full Launch Video (1080p with Audio)</a></strong> &bull; Single-call speed, developer analytics & authentic GitHub contribution calendar</em>
+  </p>
+</div>
+
+---
+
 ## ✨ Features
 
 - **Single Unified API Call**: Queries `https://api.github.com/users/{username}` in 1 single HTTP request, drastically conserving rate limits and providing instantaneous load times.
