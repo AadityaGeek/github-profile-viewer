@@ -11,7 +11,7 @@ A modern, responsive, developer-focused web dashboard to inspect GitHub profiles
 
 ## 🎬 Video Showcase
 
-[GitScope Showcase Video](https://github.com/user-attachments/assets/d51d0f7a-60b4-45ab-93b7-5ef01f158b84)
+https://github.com/user-attachments/assets/18034159-ea2b-46a0-8f9d-492e2b414635
 
 
 ## ✨ Features
